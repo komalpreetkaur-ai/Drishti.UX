@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { PortfolioTab } from './components/PortfolioTab';
+import { PagesTab } from './components/PagesTab';
+import { PageDetailTab } from './components/PageDetailTab';
 import { OverviewTab } from './components/OverviewTab';
 import { HeatmapTab } from './components/HeatmapTab';
 import { FunnelTab } from './components/FunnelTab';
@@ -24,6 +26,7 @@ export const App: React.FC = () => {
   const [activeSiteId, setActiveSiteId] = useState<string>('zmt_9f4c21');
   const [device, setDevice] = useState<DeviceType>('desktop');
   const [range, setRange] = useState<string>('Last 7 days');
+  const [selectedPagePath, setSelectedPagePath] = useState<string>('/checkout#payment');
 
   const [portfolioSites, setPortfolioSites] = useState<PortfolioSite[]>(SITES);
 
@@ -58,12 +61,12 @@ export const App: React.FC = () => {
     fixFirst: currentSiteData.findings[0]?.recommendation || 'Fix checkout friction'
   };
 
-  const handleSelectSite = (siteId: string, initialTab: TabId = 'overview') => {
+  const handleSelectSite = (siteId: string, initialTab: TabId = 'pages') => {
     setActiveSiteId(siteId);
     setActiveTab(initialTab);
   };
 
-  const handleCompleteAddSite = (domain: string, goal: string, successUrl: string, isInstant: boolean) => {
+  const handleCompleteAddSite = (domain: string, isInstant: boolean) => {
     const hex = Math.random().toString(16).substring(2, 8);
     const newId = domain.slice(0, 3).toLowerCase() + '_' + hex;
     const newSite: PortfolioSite = {
@@ -71,7 +74,7 @@ export const App: React.FC = () => {
       domain,
       label: 'Added just now',
       live: !isInstant,
-      kpi: goal,
+      kpi: 'Order placed',
       conv: 54.2,
       delta: 1.0,
       sessions: 1240,
@@ -86,15 +89,23 @@ export const App: React.FC = () => {
 
     setPortfolioSites((prev) => [...prev.filter((s) => s.domain !== domain), newSite]);
     setActiveSiteId(newId);
-    setActiveTab('overview');
+    // Move to Screen 2 — pages (worst page ranked first)
+    setActiveTab('pages');
+  };
+
+  const handleSelectPageDetail = (pagePath: string) => {
+    setSelectedPagePath(pagePath);
+    setActiveTab('pagedetail');
   };
 
   const showSiteTabs = activeTab !== 'portfolio' && activeTab !== 'addsite' && activeTab !== 'sites' && activeTab !== 'install' && activeTab !== 'profile';
-  const showFilters = activeTab === 'overview' || activeTab === 'findings' || activeTab === 'funnel' || activeTab === 'heatmap';
+  const showFilters = activeTab === 'pagedetail' || activeTab === 'overview' || activeTab === 'findings' || activeTab === 'funnel' || activeTab === 'heatmap';
 
   const getPageTitle = () => {
     switch (activeTab) {
       case 'portfolio': return 'All websites';
+      case 'pages': return 'Screen 2 — Pages';
+      case 'pagedetail': return 'Screen 3 — Page Detail';
       case 'overview': return 'Overview';
       case 'findings': return 'AI findings';
       case 'funnel': return 'Order funnel';
@@ -103,7 +114,7 @@ export const App: React.FC = () => {
       case 'sites': return 'Sites & KPI';
       case 'install': return 'Tracking snippet';
       case 'profile': return 'Profile';
-      case 'addsite': return 'Add a new website';
+      case 'addsite': return 'Screen 1 — Connect';
       default: return 'Dashboard';
     }
   };
@@ -151,7 +162,7 @@ export const App: React.FC = () => {
               <p className="text-muted" style={{ margin: 0, fontSize: '12.5px' }}>{getPageSub()}</p>
             </div>
 
-            {/* Header Right Filters (Shown only on analysis views) */}
+            {/* Header Right Filters */}
             {showFilters && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '4px' }}>
                 <select
@@ -182,15 +193,12 @@ export const App: React.FC = () => {
             )}
           </div>
 
-          {/* Sub-Header Site Analysis Tabs ONLY (No Setup Tabs inside Website Pages) */}
+          {/* Sub-Header Site Diagnostic Tabs */}
           {showSiteTabs && (
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
               {[
-                { id: 'overview', label: 'Overview' },
-                { id: 'findings', label: `AI findings (${currentDataset.findings.length})` },
-                { id: 'funnel', label: 'Order funnel' },
-                { id: 'heatmap', label: 'Checkout heatmap' },
-                { id: 'export', label: 'Export' }
+                { id: 'pages', label: 'Screen 2 — Pages (Worst First)' },
+                { id: 'pagedetail', label: 'Screen 3 — Page Detail' }
               ].map((t) => {
                 const isActive = activeTab === t.id;
                 return (
@@ -215,10 +223,7 @@ export const App: React.FC = () => {
               })}
 
               <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '10px', paddingBottom: '6px' }}>
-                <span style={{ fontSize: '11.5px', color: '#4a7a4a', fontWeight: 600 }}>🟢 Snippet Live</span>
-                <button onClick={() => setActiveTab('export')} className="btn btn-primary" style={{ padding: '6px 13px', fontSize: '12.5px' }}>
-                  Download report
-                </button>
+                <span style={{ fontSize: '11.5px', color: '#3E7C55', fontWeight: 600 }}>🟢 Snippet Connected</span>
               </div>
             </div>
           )}
@@ -232,7 +237,7 @@ export const App: React.FC = () => {
             sites={portfolioSites}
             sharedIssues={SHARED_ISSUES}
             leakboard={LEAKBOARD}
-            onSelectSite={handleSelectSite}
+            onSelectSite={(id) => handleSelectSite(id, 'pages')}
             onStartAddSite={() => setActiveTab('addsite')}
           />
         )}
@@ -241,6 +246,23 @@ export const App: React.FC = () => {
           <AddSiteWizard
             onComplete={handleCompleteAddSite}
             onCancel={() => setActiveTab('portfolio')}
+          />
+        )}
+
+        {activeTab === 'pages' && (
+          <PagesTab
+            site={currentDataset}
+            range={range}
+            onSelectPage={handleSelectPageDetail}
+          />
+        )}
+
+        {activeTab === 'pagedetail' && (
+          <PageDetailTab
+            site={currentDataset}
+            device={device}
+            range={range}
+            onBackToPages={() => setActiveTab('pages')}
           />
         )}
 
@@ -286,7 +308,7 @@ export const App: React.FC = () => {
             currentSite={currentDataset}
             sitesList={LINKED_SITES}
             onStartAddSite={() => setActiveTab('addsite')}
-            onSelectSite={(id) => handleSelectSite(id, 'overview')}
+            onSelectSite={(id) => handleSelectSite(id, 'pages')}
           />
         )}
 

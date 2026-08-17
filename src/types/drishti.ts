@@ -1,4 +1,4 @@
-export type TabId = 'portfolio' | 'overview' | 'findings' | 'funnel' | 'heatmap' | 'export' | 'sites' | 'install' | 'profile' | 'addsite' | 'instant' | 'settings';
+export type TabId = 'portfolio' | 'pages' | 'pagedetail' | 'overview' | 'findings' | 'funnel' | 'heatmap' | 'export' | 'sites' | 'install' | 'profile' | 'addsite' | 'instant' | 'settings';
 export type DeviceType = 'desktop' | 'mobile';
 export type OverlayType = 'click' | 'scroll' | 'none';
 export type Severity = 'Critical' | 'High' | 'Medium' | 'Low';

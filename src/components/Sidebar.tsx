@@ -22,6 +22,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userPlan,
   sitesCount
 }) => {
+  const isSiteView = activeTab !== 'portfolio' && activeTab !== 'addsite';
   const isTabActive = (t: TabId) => activeTab === t;
 
   const itemStyle = (on: boolean) => ({
@@ -114,6 +115,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {sitesCount}
           </span>
         </button>
+
+        {/* Site Diagnostic Views */}
+        {isSiteView && (
+          <>
+            <div style={{ fontSize: '9px', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,237,243,.42)', fontFamily: 'var(--font-heading)', padding: '18px 10px 7px' }}>
+              Pages &amp; Detail
+            </div>
+
+            <button onClick={() => onTabChange('pages')} style={itemStyle(isTabActive('pages'))}>
+              <span style={ruleStyle(isTabActive('pages'))}></span>
+              <span>Screen 2 — Pages</span>
+            </button>
+
+            <button onClick={() => onTabChange('pagedetail')} style={itemStyle(isTabActive('pagedetail'))}>
+              <span style={ruleStyle(isTabActive('pagedetail'))}></span>
+              <span>Screen 3 — Page Detail</span>
+            </button>
+          </>
+        )}
 
         {/* Set Up Section (Always visible) */}
         <div style={{ fontSize: '9px', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,237,243,.42)', fontFamily: 'var(--font-heading)', padding: '18px 10px 7px' }}>
