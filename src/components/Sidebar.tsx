@@ -9,7 +9,6 @@ interface SidebarProps {
   userInitials: string;
   userName: string;
   userPlan: string;
-  findingsCount: number;
   sitesCount: number;
 }
 
@@ -21,11 +20,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   userInitials,
   userName,
   userPlan,
-  findingsCount,
   sitesCount
 }) => {
-  const isSiteView = activeTab !== 'portfolio' && activeTab !== 'addsite';
-
   const isTabActive = (t: TabId) => activeTab === t;
 
   const itemStyle = (on: boolean) => ({
@@ -119,66 +115,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </span>
         </button>
 
-        {/* Site Analyse Section */}
-        {isSiteView && (
-          <>
-            <div style={{ fontSize: '9px', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,237,243,.42)', fontFamily: 'var(--font-heading)', padding: '18px 10px 7px' }}>
-              Analyse
-            </div>
+        {/* Set Up Section (Always visible) */}
+        <div style={{ fontSize: '9px', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,237,243,.42)', fontFamily: 'var(--font-heading)', padding: '18px 10px 7px' }}>
+          Set up
+        </div>
 
-            <button onClick={() => onTabChange('overview')} style={itemStyle(isTabActive('overview'))}>
-              <span style={ruleStyle(isTabActive('overview'))}></span>
-              <span>Overview</span>
-            </button>
+        <button onClick={() => onTabChange('sites')} style={itemStyle(isTabActive('sites'))}>
+          <span style={ruleStyle(isTabActive('sites'))}></span>
+          <span>Sites &amp; KPI</span>
+        </button>
 
-            <button onClick={() => onTabChange('findings')} style={itemStyle(isTabActive('findings'))}>
-              <span style={ruleStyle(isTabActive('findings'))}></span>
-              <span>AI findings</span>
-              <span style={{ marginLeft: 'auto', fontSize: '10.5px', padding: '1px 7px', borderRadius: '9px', background: '#8d2f2f', color: '#fff' }}>
-                {findingsCount}
-              </span>
-            </button>
+        <button onClick={() => onTabChange('install')} style={itemStyle(isTabActive('install'))}>
+          <span style={ruleStyle(isTabActive('install'))}></span>
+          <span>Tracking snippet</span>
+        </button>
 
-            <button onClick={() => onTabChange('funnel')} style={itemStyle(isTabActive('funnel'))}>
-              <span style={ruleStyle(isTabActive('funnel'))}></span>
-              <span>Order funnel</span>
-            </button>
-
-            <button onClick={() => onTabChange('heatmap')} style={itemStyle(isTabActive('heatmap'))}>
-              <span style={ruleStyle(isTabActive('heatmap'))}></span>
-              <span>Checkout heatmap</span>
-            </button>
-
-            <button onClick={() => onTabChange('export')} style={itemStyle(isTabActive('export'))}>
-              <span style={ruleStyle(isTabActive('export'))}></span>
-              <span>Export</span>
-            </button>
-          </>
-        )}
-
-        {/* Set Up Section (Shown only when NOT analyzing a specific website) */}
-        {!isSiteView && (
-          <>
-            <div style={{ fontSize: '9px', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(239,237,243,.42)', fontFamily: 'var(--font-heading)', padding: '18px 10px 7px' }}>
-              Set up
-            </div>
-
-            <button onClick={() => onTabChange('sites')} style={itemStyle(isTabActive('sites'))}>
-              <span style={ruleStyle(isTabActive('sites'))}></span>
-              <span>Sites &amp; KPI</span>
-            </button>
-
-            <button onClick={() => onTabChange('install')} style={itemStyle(isTabActive('install'))}>
-              <span style={ruleStyle(isTabActive('install'))}></span>
-              <span>Tracking snippet</span>
-            </button>
-
-            <button onClick={() => onTabChange('profile')} style={itemStyle(isTabActive('profile'))}>
-              <span style={ruleStyle(isTabActive('profile'))}></span>
-              <span>Profile</span>
-            </button>
-          </>
-        )}
+        <button onClick={() => onTabChange('profile')} style={itemStyle(isTabActive('profile'))}>
+          <span style={ruleStyle(isTabActive('profile'))}></span>
+          <span>Profile</span>
+        </button>
 
       </div>
 

@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 
-export const SnippetTab: React.FC = () => {
+interface SnippetTabProps {
+  siteId?: string;
+  domain?: string;
+}
+
+export const SnippetTab: React.FC<SnippetTabProps> = ({
+  siteId = 'zmt_9f4c21',
+  domain = 'zomato.com'
+}) => {
   const [copied, setCopied] = useState(false);
   const [verifying, setVerifying] = useState(false);
 
-  const snippetCode = `<script async src="https://cdn.drishti.app/t.js" data-site="zmt_9f4c21"></script>`;
+  const snippetCode = `<script async src="https://cdn.drishti.app/t.js" data-site="${siteId}"></script>`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(snippetCode);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), 1800);
   };
 
   const handleRecheck = () => {
@@ -50,14 +58,14 @@ export const SnippetTab: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '22px', padding: '16px 20px', border: '1px solid var(--color-divider)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
         <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#4a7a4a', boxShadow: '0 0 0 4px rgba(74,122,74,.18)' }}></span>
         <span style={{ fontSize: '13.5px', fontWeight: 600 }}>
-          Verification ping received 40 seconds ago from zomato.com/checkout
+          Verification ping received from {domain}
         </span>
         <button
           onClick={handleRecheck}
           className="btn btn-secondary"
           style={{ marginLeft: 'auto', padding: '6px 14px', fontSize: '12.5px' }}
         >
-          {verifying ? 'Checking...' : 'Recheck live status'}
+          {verifying ? 'Looking for the snippet…' : 'Check again'}
         </button>
       </div>
 

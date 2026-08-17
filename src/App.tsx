@@ -64,7 +64,8 @@ export const App: React.FC = () => {
   };
 
   const handleCompleteAddSite = (domain: string, goal: string, successUrl: string, isInstant: boolean) => {
-    const newId = domain.slice(0, 3).toLowerCase() + '_' + Math.floor(100000 + Math.random() * 900000);
+    const hex = Math.random().toString(16).substring(2, 8);
+    const newId = domain.slice(0, 3).toLowerCase() + '_' + hex;
     const newSite: PortfolioSite = {
       id: newId,
       domain,
@@ -125,7 +126,6 @@ export const App: React.FC = () => {
         userInitials="AR"
         userName="Ananya Rao"
         userPlan="Pro plan"
-        findingsCount={currentDataset.findings.length}
         sitesCount={portfolioSites.length}
       />
 
@@ -285,12 +285,16 @@ export const App: React.FC = () => {
           <SettingsTab
             currentSite={currentDataset}
             sitesList={LINKED_SITES}
-            onAddAndSelectSite={(d) => handleCompleteAddSite(d, d, `https://${d}`, true)}
+            onStartAddSite={() => setActiveTab('addsite')}
+            onSelectSite={(id) => handleSelectSite(id, 'overview')}
           />
         )}
 
         {activeTab === 'install' && (
-          <SnippetTab />
+          <SnippetTab
+            siteId={currentPortfolioSite.id}
+            domain={currentDomain}
+          />
         )}
 
         {activeTab === 'profile' && (
